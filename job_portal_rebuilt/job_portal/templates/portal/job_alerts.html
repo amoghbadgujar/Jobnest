@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block title %}Job Alerts — JobNest{% endblock %}
+{% block content %}
+<section class="page-banner">
+  <div class="container">
+    <span class="eyebrow">ALERTS</span>
+    <h1>Get fresh job alerts</h1>
+    <p>Subscribe to role, location, and frequency preferences that match your next move.</p>
+  </div>
+</section>
+
+<section class="section container">
+  <div class="auth-card alert-card">
+    <form method="post" class="job-alert-form">
+      {% csrf_token %}
+      {% if form.non_field_errors %}
+        <div class="flash error">{{ form.non_field_errors }}</div>
+      {% endif %}
+      <div class="field">
+        <label for="id_email">Email</label>
+        {{ form.email }}
+        {% if form.email.errors %}<div class="form-error">{{ form.email.errors }}</div>{% endif %}
+      </div>
+      <div class="field">
+        <label for="id_keyword">Keyword</label>
+        {{ form.keyword }}
+      </div>
+      <div class="field">
+        <label for="id_location">Location</label>
+        {{ form.location }}
+      </div>
+      <div class="field">
+        <label for="id_frequency">Frequency</label>
+        {{ form.frequency }}
+      </div>
+      <button class="button full" type="submit">Subscribe</button>
+    </form>
+  </div>
+</section>
+{% endblock %}

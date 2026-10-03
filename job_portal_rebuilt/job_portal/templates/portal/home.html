@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+{% block title %}JobNest — Find your next opportunity{% endblock %}
+{% block content %}
+<section class="hero hero-pro">
+  <div class="container hero-grid">
+    <div class="hero-copy">
+      <span class="eyebrow">SMART JOB SEARCH · INDIA</span>
+      <h1>Find a job that fits <span>your future.</span></h1>
+      <p>Search thousands of opportunities by role, skill, company, location, work mode, and experience. Candidates can apply and companies can hire from one platform.</p>
+      <form class="hero-search" action="{% url 'portal:job_list' %}" method="get">
+        <div class="search-field"><span>⌕</span><input name="q" placeholder="Job title, skill or company" aria-label="Search jobs"></div>
+        <div class="search-field"><span>⌖</span><input name="location" placeholder="City, state or remote" aria-label="Location"></div>
+        <button type="submit">Search Jobs</button>
+      </form>
+      <div class="popular-searches"><span>Popular:</span><a href="{% url 'portal:job_list' %}?q=Python">Python</a><a href="{% url 'portal:job_list' %}?q=Java">Java</a><a href="{% url 'portal:job_list' %}?q=Data">Data</a><a href="{% url 'portal:job_list' %}?q=UI%2FUX">UI/UX</a></div>
+    </div>
+    <div class="hero-showcase">
+      <div class="showcase-top"><span>● Live hiring marketplace</span><span class="online-dot">Online</span></div>
+      <div class="showcase-stats"><div><b>{{ job_count }}+</b><span>Open jobs</span></div><div><b>{{ company_count }}+</b><span>Companies</span></div><div><b>11</b><span>Job categories</span></div></div>
+      {% for job in featured_jobs|slice:':3' %}
+      <div class="showcase-job"><div class="logo-circle">{{ job.company_display_name|slice:':1'|upper }}</div><div class="showcase-job-main"><b>{{ job.title }}</b><span>{{ job.company_display_name }} · {{ job.location }}</span></div><strong>₹{{ job.salary_min|floatformat:0 }}k–₹{{ job.salary_max|floatformat:0 }}k</strong></div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="stats-strip">
+  <div class="container stat-strip-grid">
+    <div><b>{{ job_count }}+</b><span>Jobs ready to explore</span></div>
+    <div><b>{{ company_count }}+</b><span>Companies hiring</span></div>
+    <div><b>100%</b><span>Database-driven listings</span></div>
+    <div><b>1-click</b><span>Application tracking</span></div>
+  </div>
+</section>
+
+<section class="section container">
+  <div class="section-head"><div><span class="eyebrow">Top opportunities</span><h2>Featured jobs</h2><p class="section-subtitle">Fresh openings from different teams and industries.</p></div><a class="text-link" href="{% url 'portal:job_list' %}">View all jobs →</a></div>
+  <div class="job-grid">
+    {% for job in featured_jobs %}
+    <article class="job-card job-card-rich">
+      <div class="job-card-head"><div class="logo-circle">{{ job.company_display_name|slice:':1'|upper }}</div><div class="job-title-wrap"><div class="tag-row"><span class="featured-tag">Featured</span><span class="category-tag">{{ job.get_category_display }}</span></div><h3>{{ job.title }}</h3><p>{{ job.company_display_name }}</p></div></div>
+      <div class="chips"><span>{{ job.get_work_mode_display }}</span><span>{{ job.get_job_type_display }}</span><span>{{ job.get_experience_display }}</span></div>
+      <div class="card-meta"><span>⌖ {{ job.location }}</span><span>◷ {{ job.created_at|timesince }} ago</span></div>
+      <p class="job-salary">₹{{ job.salary_min|floatformat:0 }}k – ₹{{ job.salary_max|floatformat:0 }}k / month</p>
+      <div class="skill-row">{% for skill in job.skill_list|slice:':3' %}<span>{{ skill }}</span>{% endfor %}</div>
+      <a class="card-link" href="{% url 'portal:job_detail' job.pk %}">View job details →</a>
+    </article>
+    {% empty %}
+    <div class="empty-state"><h3>No jobs loaded</h3><p>Run <code>python manage.py migrate</code> once. The database will automatically create the demo marketplace.</p></div>
+    {% endfor %}
+  </div>
+</section>
+
+<section class="section section-soft">
+  <div class="container">
+    <div class="section-head"><div><span class="eyebrow">Explore by category</span><h2>Jobs for every career path</h2></div><a class="text-link" href="{% url 'portal:job_list' %}">Browse everything →</a></div>
+    <div class="category-grid">
+      {% for value, label, count in category_counts %}
+      {% if count %}<a class="category-card" href="{% url 'portal:job_list' %}?category={{ value|urlencode }}"><span class="category-icon">◆</span><span><b>{{ label }}</b><small>{{ count }} job{{ count|pluralize }}</small></span><span class="arrow">→</span></a>{% endif %}
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="section container">
+  <div class="feature-showcase">
+    <div class="feature-copy">
+      <span class="eyebrow">SMART HIRING</span>
+      <h2>Hire faster and stay ahead of the market.</h2>
+      <p>Track hiring trends, discover companies, and get curated job alerts tailored to your role and location.</p>
+      <a class="button" href="{% url 'portal:company_directory' %}">Explore companies</a>
+    </div>
+    <div class="feature-card">
+      <h3>Job alert signup</h3>
+      <form method="post" action="{% url 'portal:job_alerts' %}" class="job-alert-form">
+        {% csrf_token %}
+        {{ job_alert_form.non_field_errors }}
+        <div class="field">{{ job_alert_form.email }}</div>
+        <div class="field">{{ job_alert_form.keyword }}</div>
+        <div class="field">{{ job_alert_form.location }}</div>
+        <div class="field select-wrap">{{ job_alert_form.frequency }}</div>
+        <button class="button full" type="submit">Create alert</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<section class="section container">
+  <div class="section-head"><div><span class="eyebrow">Just posted</span><h2>Latest jobs</h2></div></div>
+  <div class="job-grid compact-grid">
+    {% for job in latest_jobs %}
+    <article class="job-card job-card-compact">
+      <div class="job-card-head"><div class="logo-circle">{{ job.company_display_name|slice:':1'|upper }}</div><div><h3>{{ job.title }}</h3><p>{{ job.company_display_name }}</p></div></div>
+      <div class="compact-line">{{ job.get_category_display }} · {{ job.get_work_mode_display }}</div>
+      <div class="card-meta"><span>⌖ {{ job.location }}</span><span>₹{{ job.salary_min }}k–₹{{ job.salary_max }}k</span></div>
+      <a class="card-link" href="{% url 'portal:job_detail' job.pk %}">See opening →</a>
+    </article>
+    {% endfor %}
+  </div>
+</section>
+
+<section class="role-section">
+  <div class="container role-grid">
+    <div class="role-box"><span class="eyebrow">FOR CANDIDATES</span><h2>Build once. Apply anywhere.</h2><p>Keep your profile and resume ready, save jobs, apply with a cover letter, and track hiring status from your dashboard.</p><a class="button outline" href="{% url 'portal:register' %}">Create candidate account</a></div>
+    <div class="role-box role-box-light"><span class="eyebrow">FOR COMPANIES</span><h2>Post jobs. Manage applicants.</h2><p>Create company listings, choose salary and work mode, receive applications, and move candidates through your hiring pipeline.</p><a class="button" href="{% url 'portal:register' %}">Create company account</a></div>
+  </div>
+</section>
+{% endblock %}

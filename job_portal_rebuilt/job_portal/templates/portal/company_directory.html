@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block title %}Company Directory — JobNest{% endblock %}
+{% block content %}
+<section class="page-banner">
+  <div class="container">
+    <span class="eyebrow">COMPANY DIRECTORY</span>
+    <h1>Explore employers</h1>
+    <p>Browse active hiring companies and discover where your next role might be.</p>
+  </div>
+</section>
+
+<section class="section container">
+  <div class="company-directory-grid">
+    {% for company in companies %}
+    <article class="company-card">
+      <div class="company-head">
+        <div class="logo-circle big">{{ company.profile.company_name|default:company.username|slice:':1'|upper }}</div>
+        <div>
+          <h2>{{ company.profile.company_name|default:company.username }}</h2>
+          <p>{{ company.profile.location|default:'India' }}</p>
+        </div>
+      </div>
+      <p class="company-bio">{{ company.profile.bio|default:'Company information will be updated soon.' }}</p>
+      <div class="company-stats">
+        <div><strong>{{ company.active_jobs }}</strong><span>Open jobs</span></div>
+        <div><strong>{{ company.total_jobs }}</strong><span>Total listings</span></div>
+      </div>
+      {% with jobs=company.jobs.all|slice:':3' %}
+      {% if jobs %}
+      <ul class="company-jobs">
+        {% for job in jobs %}
+        <li><a href="{% url 'portal:job_detail' job.pk %}">{{ job.title }}</a></li>
+        {% endfor %}
+      </ul>
+      {% endif %}
+      {% endwith %}
+      <a class="button secondary full" href="{% url 'portal:job_list' %}?q={{ company.profile.company_name|default:company.username|urlencode }}">View openings</a>
+    </article>
+    {% empty %}
+    <div class="empty-state"><h3>No companies available</h3><p>Recruiters will appear here once they publish jobs.</p></div>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

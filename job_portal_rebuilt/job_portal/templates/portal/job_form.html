@@ -1,0 +1,5 @@
+{% extends 'base.html' %}
+{% block title %}{{ mode }} Job — JobNest{% endblock %}
+{% block content %}
+<section class="container form-page wide"><div class="form-header"><span class="eyebrow">Company portal</span><h1>{{ mode }} job posting</h1><p>Give candidates enough detail to decide whether to apply.</p></div><form method="post" class="form-card job-form">{% csrf_token %}{{ form.non_field_errors }}<div class="two-col">{% for field in form %}<div class="field {% if field.name in 'description requirements skills' %}span-2{% endif %}"><label for="{{ field.id_for_label }}">{{ field.label }}</label>{{ field }}{% for error in field.errors %}<div class="error">{{ error }}</div>{% endfor %}</div>{% endfor %}</div><div class="form-actions"><button class="button" type="submit">{{ mode }} job</button><a class="button secondary" href="{% url 'portal:dashboard' %}">Cancel</a></div></form></section>
+{% endblock %}

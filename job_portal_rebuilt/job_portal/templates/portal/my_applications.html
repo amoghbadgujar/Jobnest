@@ -1,0 +1,5 @@
+{% extends 'base.html' %}
+{% block title %}My Applications — JobNest{% endblock %}
+{% block content %}
+<section class="container dashboard-page"><div class="dashboard-head"><div><span class="eyebrow">Candidate portal</span><h1>My applications</h1><p>Track every role you have applied for.</p></div></div><div class="application-list">{% for app in applications %}<article class="application-card"><div class="logo-circle">{{ app.job.company_display_name|slice:':1'|upper }}</div><div class="application-main"><h2>{{ app.job.title }}</h2><p>{{ app.job.company_display_name }} · {{ app.job.location }}</p><p>Applied {{ app.applied_at|timesince }} ago</p></div><span class="status-pill">{{ app.get_status_display }}</span><a class="button small secondary" href="{% url 'portal:job_detail' app.job.pk %}">View job</a></article>{% empty %}<div class="empty-state"><h3>No applications yet</h3><a class="button" href="{% url 'portal:job_list' %}">Search jobs</a></div>{% endfor %}</div></section>
+{% endblock %}

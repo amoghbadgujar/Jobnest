@@ -1,0 +1,5 @@
+{% extends 'base.html' %}
+{% block title %}Profile — JobNest{% endblock %}
+{% block content %}
+<section class="container form-page"><div class="form-header"><span class="eyebrow">Account</span><h1>Profile settings</h1><p>Keep your information current for applications and hiring.</p></div><form method="post" enctype="multipart/form-data" class="form-card">{% csrf_token %}{{ form.non_field_errors }}<div class="two-col">{% for field in form %}<div class="field {% if field.name in 'bio' %}span-2{% endif %}">{{ field.label_tag }}{{ field }}{% for error in field.errors %}<div class="error">{{ error }}</div>{% endfor %}</div>{% endfor %}</div><button class="button" type="submit">Save profile</button></form></section>
+{% endblock %}

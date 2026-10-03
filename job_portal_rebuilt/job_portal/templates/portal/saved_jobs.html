@@ -1,0 +1,5 @@
+{% extends 'base.html' %}
+{% block title %}Saved Jobs — JobNest{% endblock %}
+{% block content %}
+<section class="container dashboard-page"><div class="dashboard-head"><div><span class="eyebrow">Candidate portal</span><h1>Saved jobs</h1><p>Keep interesting opportunities in one place.</p></div></div><div class="job-grid">{% for saved in saved_jobs %}<article class="job-card"><div class="job-card-head"><div class="logo-circle">{{ saved.job.company_display_name|slice:':1'|upper }}</div><div><h3>{{ saved.job.title }}</h3><p>{{ saved.job.company_display_name }}</p></div></div><p class="job-location">⌖ {{ saved.job.location }}</p><div class="chips"><span>{{ saved.job.get_work_mode_display }}</span><span>{{ saved.job.get_job_type_display }}</span></div><a class="card-link" href="{% url 'portal:job_detail' saved.job.pk %}">View job →</a></article>{% empty %}<div class="empty-state"><h3>No saved jobs</h3><p>Save jobs from the search page to see them here.</p></div>{% endfor %}</div></section>
+{% endblock %}

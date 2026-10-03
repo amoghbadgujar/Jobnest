@@ -1,0 +1,5 @@
+{% extends 'base.html' %}
+{% block title %}Login — JobNest{% endblock %}
+{% block content %}
+<section class="auth-page"><div class="auth-card"><span class="eyebrow">Welcome back</span><h1>Login to JobNest</h1><p>Access your candidate or company dashboard.</p>{% if form.errors %}<div class="error-box">Invalid username or password.</div>{% endif %}<form method="post">{% csrf_token %}<div class="field"><label for="id_username">Username</label>{{ form.username }}</div><div class="field"><label for="id_password">Password</label>{{ form.password }}</div><button class="button full" type="submit">Login</button><input type="hidden" name="next" value="{{ next }}"></form><p class="auth-foot">New here? <a href="{% url 'portal:register' %}">Create an account</a></p></div></section>
+{% endblock %}

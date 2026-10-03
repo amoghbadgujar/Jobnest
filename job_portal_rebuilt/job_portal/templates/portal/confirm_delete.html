@@ -1,0 +1,5 @@
+{% extends 'base.html' %}
+{% block title %}Delete Job — JobNest{% endblock %}
+{% block content %}
+<section class="container form-page"><div class="form-card centered"><span class="eyebrow">Danger zone</span><h1>Delete this job?</h1><p>{{ job.title }} will be permanently removed along with its applications.</p><form method="post">{% csrf_token %}<button class="button danger" type="submit">Delete job</button><a class="button secondary" href="{% url 'portal:dashboard' %}">Cancel</a></form></div></section>
+{% endblock %}
